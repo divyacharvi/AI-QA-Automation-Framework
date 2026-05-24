@@ -1,0 +1,15 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# HuggingFace / cache files
+.cache/
+
+# Output data (optional)
+outputs/
+
+# Streamlit cache
+.streamlit/
+
+# Environment variables (IMPORTANT)
+.env

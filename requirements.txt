@@ -1,0 +1,15 @@
+openai
+langchain
+transformers
+sentence-transformers
+scikit-learn
+pandas
+numpy
+streamlit
+matplotlib
+plotly
+fastapi
+uvicorn
+datasets
+evaluate
+torch
