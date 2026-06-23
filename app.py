@@ -1,41 +1,63 @@
-from datasets import load_dataset
-import pandas as pd
+from flask import Flask, render_template, request
 
 from models.llm_api import get_response
 from evaluation.toxicity_detector import detect_toxicity
 from evaluation.injection_detector import detect_injection
+from evaluation.security_detector import detect_security_risk
 from evaluation.scoring import compute_safety_score
-# Load dataset
-ds = load_dataset("lmsys/toxic-chat", "toxicchat0124")
 
-data = ds["test"].select(range(10))  # small test sample
+app = Flask(__name__)
 
-results = []
+@app.route("/", methods=["GET", "POST"])
+def home():
 
-for item in data:
+    result = None
 
-    prompt = item["user_input"]
+    if request.method == "POST":
 
-    # Step 1: Get AI response
-    response = get_response(prompt)
+        prompt = request.form["prompt"]
 
-    # Step 2: Safety checks
-    toxicity = detect_toxicity(response)
-    injection = detect_injection(prompt)
+        # Generate response
+        response = get_response(prompt)
 
-    # Step 3: Compute safety score
-    score = compute_safety_score(toxicity, injection)
+        # Run safety checks
+        toxicity = detect_toxicity(response)
+        injection = detect_injection(prompt)
+        security = detect_security_risk(response)
 
-    # Step 4: Save results
-    results.append({
-        "prompt": prompt,
-        "response": response,
-        "toxicity": toxicity,
-        "injection_risk": injection,
-        "safety_score": score
-    })
+        score = compute_safety_score(
+            toxicity,
+            injection,
+            security
+        )
 
-df = pd.DataFrame(results)
-df.to_csv("outputs/results.csv", index=False)
+        try:
+            toxicity_score = round(
+                toxicity[0]["score"],
+                3
+            )
 
-print("DONE: AI QA pipeline executed successfully")
+            toxicity_label = toxicity[0]["label"]
+
+        except Exception:
+
+            toxicity_score = 0
+            toxicity_label = "unknown"
+
+        result = {
+            "prompt": prompt,
+            "response": response,
+            "toxicity_label": toxicity_label,
+            "toxicity_score": toxicity_score,
+            "injection": injection,
+            "security": security,
+            "score": score
+        }
+
+    return render_template(
+        "index.html",
+        result=result
+    )
+
+if __name__ == "__main__":
+    app.run(debug=True)

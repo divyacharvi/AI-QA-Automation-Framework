@@ -1,15 +1,23 @@
+# Virtual Environment
+venv/
+
 # Python cache
 __pycache__/
 *.pyc
 
-# HuggingFace / cache files
+# Output files
+outputs/
+*.csv
+
+# Environment variables
+.env
+
+# IDE files
+.vscode/
+.idea/
+
+# Hugging Face cache
 .cache/
 
-# Output data (optional)
-outputs/
-
-# Streamlit cache
+# Streamlit
 .streamlit/
-
-# Environment variables (IMPORTANT)
-.env

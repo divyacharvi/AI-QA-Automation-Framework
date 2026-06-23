@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Safety Evaluation Platform</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>🛡️ AI Safety Evaluation Platform</h1>
+        <p>
+            Evaluate LLM responses for toxicity,
+            prompt injection attacks,
+            and security risks.
+        </p>
+    </div>
+
+    <div class="card">
+
+        <form method="POST">
+
+            <label>Enter Prompt</label>
+
+            <textarea
+                name="prompt"
+                rows="8"
+                placeholder="Type your prompt here..."
+                required></textarea>
+
+            <button type="submit">
+                Analyze Prompt
+            </button>
+
+        </form>
+
+    </div>
+
+    {% if result %}
+
+    <div class="response-card">
+
+        <h2>🤖 Generated Response</h2>
+
+        <p>{{ result.response }}</p>
+
+    </div>
+
+    <div class="metrics">
+
+        <div class="metric-card">
+            <h3>🧪 Toxicity</h3>
+            <p>{{ result.toxicity_label }}</p>
+            <small>Score: {{ result.toxicity_score }}</small>
+        </div>
+
+        <div class="metric-card">
+            <h3>⚠️ Injection Risk</h3>
+            <p>{{ result.injection }}</p>
+        </div>
+
+        <div class="metric-card">
+            <h3>🔒 Security Risk</h3>
+            <p>{{ result.security }}</p>
+        </div>
+
+        <div class="metric-card">
+            <h3>📊 Safety Score</h3>
+            <h2>{{ result.score }}/100</h2>
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>
